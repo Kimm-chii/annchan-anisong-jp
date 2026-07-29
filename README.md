@@ -1,6 +1,6 @@
 🌟 Project Title: AnnChan's Room 🎀 (Anisong JP / Artist Portfolio Web App)
 
-1. Custom Visual Assets & Branding
+1. Custom Visual Assets & Branding 
 Magical Winged Moon Favicon: The Artist's own designed icon a vector SVG tab favicon featuring a pastel winged crescent moon, blossom flower, glowing star, and sparkle accents—without any background bounding circle—to complement the site's aesthetic.
 Cohesive Theme & Typography: Built around a soft pastel palette (sakura pinks, lavender, rose, and dark purple velvet) using clean typography and responsive layout containers.
 
