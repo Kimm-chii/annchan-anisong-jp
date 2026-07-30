@@ -8,11 +8,14 @@ import Footer from "./components/Footer";
 import FaviconSetter from "./components/FaviconSetter";
 import FloatingNav from "./components/FloatingNav";
 import IntroSplash from "./components/IntroSplash";
+import OpenGraphHead from "./components/OpenGraphHead";
 import { siteData } from "./data";
 
 export default function App() {
   return (
     <div className="min-h-screen text-gray-800 font-sans selection:bg-pink-200 selection:text-pink-900">
+      <OpenGraphHead />
+      <FaviconSetter src="/image/annchan-hero.jpg" />
       <IntroSplash />
       <FloatingNav />
       <Navbar />
