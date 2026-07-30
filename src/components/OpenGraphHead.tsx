@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { SEO_CONFIG } from "../config/seoConfig";
 
 interface OpenGraphMetaProps {
   title?: string;
@@ -7,38 +8,47 @@ interface OpenGraphMetaProps {
   url?: string;
 }
 
+/**
+ * Utility to helper build absolute URLs from relative paths based on current window location
+ */
+export function getAbsoluteUrl(path: string): string {
+  if (typeof window === "undefined") return path;
+  if (path.startsWith("http://") || path.startsWith("https://")) return path;
+  const origin = window.location.origin;
+  const cleanPath = path.startsWith("/") ? path : `/${path}`;
+  return `${origin}${cleanPath}`;
+}
+
 export default function OpenGraphHead({
-  title = "AnnChan's Room 🎀",
-  description = "Konnichiwa! Welcome to AnnChan's Room! Singer, Streamer and lover of all things cute. Discover latest anisong covers, logs, and join our community! ✨",
-  image = "/og-preview.jpg",
+  title = SEO_CONFIG.defaultTitle,
+  description = SEO_CONFIG.defaultDescription,
+  image = SEO_CONFIG.defaultImage,
   url,
 }: OpenGraphMetaProps) {
   useEffect(() => {
-    const origin = typeof window !== "undefined" ? window.location.origin : "";
-    const fullUrl = url || (typeof window !== "undefined" ? window.location.href : origin);
-    
-    // Ensure image is an absolute URL for social media crawlers
-    const fullImageUrl = image.startsWith("http")
-      ? image
-      : `${origin}${image.startsWith("/") ? "" : "/"}${image}`;
+    if (typeof window === "undefined") return;
 
-    const updateMetaTag = (selector: string, attribute: string, value: string) => {
+    const currentOrigin = window.location.origin;
+    const fullPageUrl = url || window.location.href;
+    const fullImageUrl = getAbsoluteUrl(image);
+
+    const setMetaTag = (selector: string, attribute: string, value: string) => {
       let element = document.querySelector(selector) as HTMLMetaElement | HTMLLinkElement;
       if (!element) {
         if (selector.startsWith("meta[property=")) {
-          const propName = selector.match(/property="([^"]+)"/)?.[1];
+          const prop = selector.match(/property="([^"]+)"/)?.[1];
           element = document.createElement("meta");
-          if (propName) element.setAttribute("property", propName);
+          if (prop) element.setAttribute("property", prop);
           document.head.appendChild(element);
         } else if (selector.startsWith("meta[name=")) {
-          const nameValue = selector.match(/name="([^"]+)"/)?.[1];
+          const name = selector.match(/name="([^"]+)"/)?.[1];
           element = document.createElement("meta");
-          if (nameValue) element.setAttribute("name", nameValue);
+          if (name) element.setAttribute("name", name);
           document.head.appendChild(element);
         } else if (selector.startsWith("link[rel=")) {
-          const relValue = selector.match(/rel="([^"]+)"/)?.[1];
+          const rel = selector.match(/rel="([^"]+)"/)?.[1];
           element = document.createElement("link");
-          if (relValue) element.setAttribute("rel", relValue);
+          if (rel) element.setAttribute("rel", rel);
           document.head.appendChild(element);
         }
       }
@@ -47,37 +57,39 @@ export default function OpenGraphHead({
       }
     };
 
-    // Standard Document Title
+    // 1. Standard Document Title & Description
     document.title = title;
+    setMetaTag('meta[name="description"]', "content", description);
+    setMetaTag('meta[name="theme-color"]', "content", SEO_CONFIG.themeColor);
 
-    // Standard Meta Tags
-    updateMetaTag('meta[name="description"]', "content", description);
+    // 2. Open Graph Protocol Meta Tags
+    setMetaTag('meta[property="og:type"]', "content", "website");
+    setMetaTag('meta[property="og:site_name"]', "content", SEO_CONFIG.siteName);
+    setMetaTag('meta[property="og:locale"]', "content", SEO_CONFIG.locale);
+    setMetaTag('meta[property="og:title"]', "content", title);
+    setMetaTag('meta[property="og:description"]', "content", description);
+    setMetaTag('meta[property="og:url"]', "content", fullPageUrl);
 
-    // Open Graph Meta Tags (Facebook, Discord, LinkedIn, iMessage, WhatsApp)
-    updateMetaTag('meta[property="og:type"]', "content", "website");
-    updateMetaTag('meta[property="og:site_name"]', "content", "AnnChan's Room");
-    updateMetaTag('meta[property="og:title"]', "content", title);
-    updateMetaTag('meta[property="og:description"]', "content", description);
-    updateMetaTag('meta[property="og:image"]', "content", fullImageUrl);
-    updateMetaTag('meta[property="og:image:secure_url"]', "content", fullImageUrl);
-    updateMetaTag('meta[property="og:image:width"]', "content", "1200");
-    updateMetaTag('meta[property="og:image:height"]', "content", "630");
-    updateMetaTag('meta[property="og:image:alt"]', "content", "AnnChan's Room - Singer & Streamer Portfolio");
-    updateMetaTag('meta[property="og:url"]', "content", fullUrl);
+    // Open Graph Image Meta Tags with Absolute URLs
+    setMetaTag('meta[property="og:image"]', "content", fullImageUrl);
+    setMetaTag('meta[property="og:image:secure_url"]', "content", fullImageUrl);
+    setMetaTag('meta[property="og:image:type"]', "content", SEO_CONFIG.imageType);
+    setMetaTag('meta[property="og:image:width"]', "content", SEO_CONFIG.imageWidth);
+    setMetaTag('meta[property="og:image:height"]', "content", SEO_CONFIG.imageHeight);
+    setMetaTag('meta[property="og:image:alt"]', "content", SEO_CONFIG.imageAlt);
 
-    // Twitter Card Meta Tags (X / Twitter)
-    updateMetaTag('meta[name="twitter:card"]', "content", "summary_large_image");
-    updateMetaTag('meta[name="twitter:site"]', "content", "@AnnChan295");
-    updateMetaTag('meta[name="twitter:creator"]', "content", "@AnnChan295");
-    updateMetaTag('meta[name="twitter:title"]', "content", title);
-    updateMetaTag('meta[name="twitter:description"]', "content", description);
-    updateMetaTag('meta[name="twitter:image"]', "content", fullImageUrl);
+    // 3. Twitter / X Card Meta Tags
+    setMetaTag('meta[name="twitter:card"]', "content", SEO_CONFIG.twitterCardType);
+    setMetaTag('meta[name="twitter:site"]', "content", SEO_CONFIG.twitterHandle);
+    setMetaTag('meta[name="twitter:creator"]', "content", SEO_CONFIG.twitterHandle);
+    setMetaTag('meta[name="twitter:title"]', "content", title);
+    setMetaTag('meta[name="twitter:description"]', "content", description);
+    setMetaTag('meta[name="twitter:image"]', "content", fullImageUrl);
 
-    // Color & Canonical
-    updateMetaTag('meta[name="theme-color"]', "content", "#ffb6d9");
-    updateMetaTag('link[rel="canonical"]', "href", fullUrl);
+    // 4. Canonical URL Link Tag
+    setMetaTag('link[rel="canonical"]', "href", fullPageUrl);
 
-    // Structured Data (JSON-LD) for Search Engine Rich Snippets
+    // 5. Schema.org JSON-LD Structured Data for Rich Search Results
     let scriptTag = document.getElementById("json-ld-schema") as HTMLScriptElement;
     if (!scriptTag) {
       scriptTag = document.createElement("script");
@@ -85,21 +97,15 @@ export default function OpenGraphHead({
       scriptTag.type = "application/ld+json";
       document.head.appendChild(scriptTag);
     }
-    
+
     scriptTag.text = JSON.stringify({
       "@context": "https://schema.org",
       "@type": "MusicGroup",
       "name": "AnnChan",
-      "url": fullUrl,
+      "url": fullPageUrl,
       "image": fullImageUrl,
       "description": description,
-      "sameAs": [
-        "https://www.youtube.com/@AnnChan",
-        "https://x.com/AnnChan295",
-        "https://www.instagram.com/annchan295",
-        "https://www.facebook.com/AnnChanSings",
-        "https://ganknow.com/annchan"
-      ]
+      "sameAs": SEO_CONFIG.socialLinks,
     });
   }, [title, description, image, url]);
 
