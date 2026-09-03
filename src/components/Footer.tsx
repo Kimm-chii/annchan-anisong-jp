@@ -1,72 +1,75 @@
 import { siteData } from "../data";
 import { motion } from "motion/react";
-import { Instagram, Twitter, Youtube, Music2, Facebook, Twitch } from "lucide-react";
-import { ReactNode } from "react";
-
-const TiktokIcon = () => (
-  <svg 
-    xmlns="http://www.w3.org/2000/svg" 
-    width="24" 
-    height="24" 
-    viewBox="0 0 24 24" 
-    fill="currentColor"
-  >
-    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" />
-  </svg>
-);
+import { ArrowUp, Heart, Sparkles } from "lucide-react";
 
 export default function Footer() {
-  return (
-    <footer id="socials" className="bg-white dark:bg-slate-900 pt-12 sm:pt-16 md:pt-20 pb-8 sm:pb-10 border-t-2 sm:border-t-4 border-pink-50 dark:border-slate-800 relative overflow-hidden transition-colors">
-      {/* Top Edge Gradient Accent */}
-      <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-pink-200 via-pink-400 to-purple-300 dark:from-purple-900 dark:via-purple-500 dark:to-indigo-900 opacity-70"></div>
-      
-      <div className="max-w-4xl mx-auto px-6 sm:px-8 text-center relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mb-8 sm:mb-10"
-        >
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-pink-500 dark:text-purple-400 mb-4 sm:mb-6 flex items-center justify-center gap-2 transition-colors tracking-tight">
-            {siteData.header.title}
-          </h2>
-          <p className="text-gray-500 dark:text-slate-400 text-sm sm:text-base mb-6 sm:mb-8 max-w-md mx-auto transition-colors leading-relaxed">
-            Thank you for visiting my little corner of the internet. Let's stay connected! 💕
-          </p>
-          
-          {/* Social Links */}
-          <div className="flex justify-center items-center gap-3 sm:gap-4 flex-wrap">
-            <SocialLink href={siteData.socials.youtube} icon={<Youtube className="w-5 h-5 sm:w-6 sm:h-6" />} label="YouTube" />
-            <SocialLink href={siteData.socials.instagram} icon={<Instagram className="w-5 h-5 sm:w-6 sm:h-6" />} label="Instagram" />
-            <SocialLink href={siteData.socials.twitter} icon={<Twitter className="w-5 h-5 sm:w-6 sm:h-6" />} label="Twitter" />
-            <SocialLink href={siteData.socials.facebook} icon={<Facebook className="w-5 h-5 sm:w-6 sm:h-6" />} label="Facebook" />
-            <SocialLink href={siteData.socials.tiktok} icon={<TiktokIcon />} label="TikTok" />
-            <SocialLink href={siteData.socials.twitch} icon={<Twitch className="w-5 h-5 sm:w-6 sm:h-6" />} label="Twitch" />
-            <SocialLink href={siteData.socials.gank} icon={<Music2 className="w-5 h-5 sm:w-6 sm:h-6" />} label="Gank" />
-          </div>
-        </motion.div>
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
-        <div className="border-t border-pink-100 dark:border-slate-800 pt-6 sm:pt-8 mt-6 sm:mt-8 transition-colors">
-          <p className="text-gray-400 dark:text-slate-500 text-xs sm:text-sm font-medium transition-colors">
-            {siteData.footer.text}
+  return (
+    <footer id="footer" className="bg-[#fffdfb]/90 dark:bg-slate-900/90 backdrop-blur-xl border-t border-pink-100/80 dark:border-slate-800/80 py-6 sm:py-8 relative overflow-hidden transition-colors">
+      {/* Delicate Top Edge Pastel Accent */}
+      <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-pink-200 via-rose-200 to-pink-300 dark:from-pink-900/60 dark:via-purple-900/60 dark:to-pink-900/60 opacity-90"></div>
+
+      <div className="max-w-[1400px] mx-auto px-6 sm:px-8 relative z-10">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4 pb-5 border-b border-pink-100/60 dark:border-slate-800/60">
+          
+          {/* Brand & Tagline */}
+          <div className="text-center md:text-left">
+            <div className="flex items-center justify-center md:justify-start gap-2 mb-1">
+              <motion.div 
+                animate={{ rotate: 360, scale: [1, 1.15, 1] }} 
+                transition={{ 
+                  rotate: { duration: 20, repeat: Infinity, ease: "linear" },
+                  scale: { duration: 3, repeat: Infinity, ease: "easeInOut" }
+                }} 
+                className="w-4 h-4 flex items-center justify-center text-pink-400 dark:text-purple-300 transform-gpu"
+              >
+                <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+                  <path d="M12 0C12.5 6 18 11.5 24 12C18 12.5 12.5 18 12 24C11.5 18 6 12.5 0 12C6 11.5 11.5 6 12 0Z" />
+                </svg>
+              </motion.div>
+              <h3 className="text-sm sm:text-base font-medium text-gray-800 dark:text-white tracking-tight">
+                AnnChan<span className="text-pink-500 dark:text-purple-300">【杏】</span>
+              </h3>
+            </div>
+            <p className="text-[11px] sm:text-xs text-gray-500 dark:text-slate-400 font-light tracking-wide flex items-center justify-center md:justify-start gap-1">
+              <span>Thanks for stopping by ♡</span>
+            </p>
+          </div>
+
+          {/* Footer Quick Links (Socials link removed) */}
+          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-[11px] sm:text-xs text-gray-600 dark:text-slate-300 font-medium tracking-wide">
+            {siteData.header.nav.map((item) => (
+              <a 
+                key={item.name} 
+                href={item.href}
+                className="hover:text-pink-500 dark:hover:text-purple-300 transition-colors"
+              >
+                {item.name}
+              </a>
+            ))}
+          </div>
+
+          {/* Compact Back to Top Button */}
+          <button
+            onClick={scrollToTop}
+            className="group inline-flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-widest text-pink-500 dark:text-purple-300 bg-pink-50/80 dark:bg-slate-800/80 hover:bg-pink-400 dark:hover:bg-purple-600 hover:text-white dark:hover:text-white px-3 py-1 rounded-full border border-pink-200/60 dark:border-slate-700/80 transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:scale-95"
+            aria-label="Back to top"
+          >
+            <span>Top</span>
+            <ArrowUp className="w-2.5 h-2.5 group-hover:-translate-y-0.5 transition-transform" />
+          </button>
+        </div>
+
+        {/* Bottom Copyright */}
+        <div className="pt-4 text-center">
+          <p className="text-[10px] sm:text-xs text-gray-400 dark:text-slate-500 font-light tracking-wider">
+            © 2026 Ann.
           </p>
         </div>
       </div>
     </footer>
-  );
-}
-
-function SocialLink({ href, icon, label }: { href: string; icon: ReactNode; label: string }) {
-  return (
-    <a 
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label={label}
-      className="w-10 h-10 sm:w-12 sm:h-12 bg-pink-50 dark:bg-slate-800 text-pink-400 dark:text-purple-400 rounded-full flex items-center justify-center hover:bg-pink-400 dark:hover:bg-purple-600 hover:text-white dark:hover:text-white transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-0.5"
-    >
-      {icon}
-    </a>
   );
 }

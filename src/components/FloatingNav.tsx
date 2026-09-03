@@ -1,7 +1,7 @@
 import { ChevronUp, ChevronDown } from "lucide-react";
 
 // IDs of the major sections to navigate through
-const sections = ["home", "about", "music", "community", "blog", "socials"];
+const sections = ["home", "about", "music", "diary", "message", "socials", "footer"];
 
 export default function FloatingNav() {
   const scrollToNext = () => {

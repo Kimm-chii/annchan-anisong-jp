@@ -2,17 +2,15 @@ export const siteData = {
   header: {
     title: "AnnChan's Room 🎀",
     nav: [
-      { name: "Home", href: "#home" },
-      { name: "About", href: "#about" },
+      { name: "About Ann", href: "#about" },
       { name: "Music", href: "#music" },
-      { name: "Community", href: "#community" },
-      { name: "Blog", href: "#blog" },
+      { name: "Diary / Community", href: "#diary-community" },
     ]
   },
   hero: {
     greeting: "Konnichiwa! 🌸",
     title: "✦　AnnChan　✦",
-    subtitle: "Singer, Streamer and lover of all things cute. Listen to my new covers on my socials!",
+    subtitle: "Anisong singer and full-time lover of all things\u00A0cute\u00A0♡\nCome listen to my newest cover below ♡",
     ctaText: "Listen Now",
     ctaLink: "#music",
     // Replace this with your own image URL
@@ -20,12 +18,19 @@ export const siteData = {
   },
   about: {
     title: "About Me ✨",
-    content: "こんにちは！ Hallo! I'm Ann, an anisong artist based in Japan who loves singing mostly Japanese songs. When I'm not singing, you'll probably find me enjoying cinematography, admiring beautiful visuals, or spending time with cats. ♡",
-    // Replace this with your own image URL
-    imageUrl: "/image/annchan-about.jpg"
+    content: "こんにちは！Hallo! I'm Ann, an anisong artist based in Japan who loves singing mostly Japanese songs. When I'm not singing, you'll probably find me behind a camera, chasing beautiful visuals, or curled up with my cats. ♡",
+    // Replace these with your own image URLs
+    imageUrls: [
+      "/image/about-1.webp",
+      "/image/about-2.webp",
+      "/image/about-3.webp",
+      "/image/about-4.webp",
+      "/image/about-5.webp"
+    ]
   },
   music: {
-    title: "Latest Releases 🎵",
+    title: "Latest Releases",
+    subtitle: "latest covers & little melodies ♡",
     albums: [
       {
         id: 1,

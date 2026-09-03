@@ -1,41 +1,67 @@
+import { useState, useEffect } from "react";
 import { siteData } from "../data";
-import { motion } from "motion/react";
-import { Sparkles, Heart, Film, Cat, Music2 } from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
+import { Sparkles, Cat, Music2, Camera } from "lucide-react";
 
 export default function About() {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const imageUrls = siteData.about.imageUrls || [];
+
+  useEffect(() => {
+    if (imageUrls.length <= 1) return;
+    
+    const timer = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % imageUrls.length);
+    }, 4500); // Crossfade every 4.5 seconds
+    
+    return () => clearInterval(timer);
+  }, [imageUrls.length]);
+
   return (
-    <section id="about" className="pt-8 sm:pt-16 pb-12 sm:pb-20 md:pb-24 relative">
-      <div className="max-w-6xl mx-auto px-5 sm:px-8 md:px-12">
-        <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-xl rounded-[2.5rem] sm:rounded-[3rem] p-6 sm:p-10 md:p-12 shadow-xl sm:shadow-2xl shadow-pink-100/50 dark:shadow-black/40 border border-pink-100/80 dark:border-slate-700/80 flex flex-col md:flex-row items-center gap-8 md:gap-12 relative overflow-hidden transition-colors">
+    <section id="about" className="pt-16 sm:pt-24 pb-16 sm:pb-28 relative">
+      <div className="max-w-[1200px] mx-auto px-5 sm:px-8 md:px-12">
+        <div className="flex flex-col md:flex-row items-center gap-12 lg:gap-24 relative">
           
-          {/* Edge Gradient Glow Overlay */}
-          <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-pink-300 via-rose-400 to-purple-400 dark:from-purple-900 dark:via-purple-500 dark:to-indigo-900 opacity-80"></div>
+          {/* Decorative background blobs to anchor the section smoothly */}
+          <div className="absolute top-1/2 left-0 w-64 h-64 bg-pink-100/40 dark:bg-purple-900/10 rounded-full blur-3xl -z-10 -translate-y-1/2 -translate-x-1/3 transition-colors"></div>
+          <div className="absolute top-1/2 right-0 w-64 h-64 bg-rose-100/40 dark:bg-pink-900/10 rounded-full blur-3xl -z-10 -translate-y-1/2 translate-x-1/3 transition-colors"></div>
 
-          {/* Decorative background blobs */}
-          <div className="absolute top-0 right-0 w-48 h-48 sm:w-64 sm:h-64 bg-pink-100/50 dark:bg-purple-900/20 rounded-full blur-3xl -z-10 translate-x-1/2 -translate-y-1/2 transition-colors"></div>
-          <div className="absolute bottom-0 left-0 w-48 h-48 sm:w-64 sm:h-64 bg-purple-100/50 dark:bg-indigo-900/20 rounded-full blur-3xl -z-10 -translate-x-1/2 translate-y-1/2 transition-colors"></div>
-
-          {/* Image */}
+          {/* Fading Image Carousel */}
           <motion.div 
-            initial={{ opacity: 0, scale: 0.9, rotate: -2 }}
-            whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="flex-1 w-full max-w-[260px] sm:max-w-sm mx-auto md:mx-0"
+            className="flex-1 w-full max-w-[300px] sm:max-w-sm lg:max-w-md mx-auto md:mx-0 relative px-2 sm:px-0"
           >
-            <div className="relative group">
-              {/* Cute dashed border behind image */}
-              <div className="absolute inset-0 border-2 sm:border-4 border-dashed border-pink-300 dark:border-purple-800/60 rounded-[1.8rem] sm:rounded-[2.2rem] transform translate-x-2.5 translate-y-2.5 sm:translate-x-4 sm:translate-y-4 -z-10 transition-colors"></div>
-              
-              <img 
-                src={siteData.about.imageUrl} 
-                alt="About AnnChan" 
-                className="w-full aspect-[4/3] object-cover rounded-[1.5rem] sm:rounded-[2rem] shadow-lg border-2 sm:border-4 border-white dark:border-slate-700 transition-transform duration-300 group-hover:scale-[1.01]"
-              />
-
-              {/* Floating japan badge */}
-              <div className="absolute bottom-3 left-3 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md px-3 py-1 rounded-full text-xs font-extrabold text-pink-600 dark:text-purple-300 shadow-md border border-pink-100 dark:border-slate-800 flex items-center gap-1.5">
-                <span>🇯🇵 Based in Japan</span>
-              </div>
+            {/* Animated Blob behind image */}
+            <motion.div 
+              animate={{ 
+                borderRadius: ["60% 40% 30% 70% / 60% 30% 70% 40%", "30% 60% 70% 40% / 50% 60% 30% 60%", "60% 40% 30% 70% / 60% 30% 70% 40%"] 
+              }}
+              transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute -inset-4 sm:-inset-6 bg-gradient-to-tr from-pink-100/60 to-rose-50/60 dark:from-purple-900/20 dark:to-slate-800/40 backdrop-blur-xl -z-10"
+            ></motion.div>
+            
+            <div className="relative group aspect-square w-full rounded-[2rem] overflow-hidden shadow-2xl shadow-pink-200/40 dark:shadow-black/30 border-4 sm:border-[6px] border-white dark:border-slate-800 transition-colors">
+              <AnimatePresence mode="popLayout">
+                {imageUrls.length > 0 && (
+                  <motion.img
+                    key={currentImageIndex}
+                    initial={{ opacity: 0, scale: 1.05 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 1.5, ease: "easeInOut" }}
+                    src={imageUrls[currentImageIndex]}
+                    alt="About AnnChan"
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                )}
+              </AnimatePresence>
+            </div>
+            
+            {/* Floating japan badge */}
+            <div className="absolute bottom-2 left-2 sm:-bottom-4 sm:-left-4 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full text-[9px] sm:text-[10px] font-medium tracking-widest uppercase text-pink-600 dark:text-purple-300 shadow-xl border border-pink-100 dark:border-slate-700 flex items-center gap-1.5 sm:gap-2 z-10 transition-colors">
+              <span>🇯🇵 Based in Japan</span>
             </div>
           </motion.div>
 
@@ -46,40 +72,54 @@ export default function About() {
             viewport={{ once: true }}
             className="flex-1 text-center md:text-left"
           >
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-pink-50 dark:bg-purple-950/60 border border-pink-200/60 dark:border-purple-800/60 text-pink-500 dark:text-purple-300 font-extrabold text-[11px] sm:text-xs uppercase tracking-wider mb-3">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-pink-50/80 dark:bg-purple-950/40 border border-pink-200/60 dark:border-purple-800/40 text-pink-500 dark:text-purple-300 font-medium text-[10px] sm:text-[11px] uppercase tracking-widest mb-4 shadow-sm backdrop-blur-sm">
               <Sparkles className="w-3 h-3 text-pink-500 dark:text-purple-300" />
               <span>Get To Know Ann</span>
             </div>
 
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-800 dark:text-white mb-4 sm:mb-5 block relative transition-colors tracking-tight">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-medium text-gray-800 dark:text-white mb-6 tracking-tight">
               {siteData.about.title}
             </h2>
 
-            <p className="text-sm sm:text-base md:text-lg text-gray-600 dark:text-slate-300 leading-relaxed font-medium transition-colors mb-6">
+            <p className="text-sm sm:text-base md:text-lg text-gray-500 dark:text-slate-300 leading-relaxed font-light transition-colors mb-8 tracking-wide">
               {siteData.about.content}
             </p>
             
-            {/* Interest Badges */}
-            <div className="flex flex-wrap gap-2 sm:gap-2.5 justify-center md:justify-start">
-              <div className="bg-pink-50 dark:bg-slate-700/80 text-pink-600 dark:text-purple-300 px-3 py-1.5 rounded-full text-xs sm:text-sm font-bold border border-pink-200/50 dark:border-slate-600 flex items-center gap-1.5 shadow-sm">
-                <Music2 className="w-3.5 h-3.5" />
-                <span>Anisong Artist</span>
-              </div>
-              <div className="bg-purple-50 dark:bg-slate-700/80 text-purple-600 dark:text-purple-300 px-3 py-1.5 rounded-full text-xs sm:text-sm font-bold border border-purple-200/50 dark:border-slate-600 flex items-center gap-1.5 shadow-sm">
-                <Film className="w-3.5 h-3.5" />
-                <span>Cinematography</span>
-              </div>
-              <div className="bg-rose-50 dark:bg-slate-700/80 text-rose-600 dark:text-rose-300 px-3 py-1.5 rounded-full text-xs sm:text-sm font-bold border border-rose-200/50 dark:border-slate-600 flex items-center gap-1.5 shadow-sm">
-                <Cat className="w-3.5 h-3.5" />
-                <span>Cat Lover</span>
-              </div>
-              <div className="bg-blue-50 dark:bg-slate-700/80 text-blue-600 dark:text-blue-300 px-3 py-1.5 rounded-full text-xs sm:text-sm font-bold border border-blue-200/50 dark:border-slate-600 flex items-center gap-1.5 shadow-sm">
-                <Heart className="w-3.5 h-3.5" />
-                <span>Beautiful Visuals</span>
+            {/* Interest Badges / Little Things */}
+            <div className="w-full h-px bg-gradient-to-r from-transparent via-pink-200 dark:via-slate-700 to-transparent my-10"></div>
+
+            <div className="text-center md:text-left">
+              <h3 className="text-[10px] sm:text-[11px] font-medium tracking-widest text-gray-400 dark:text-slate-500 uppercase mb-8">
+                Little Things I Love
+              </h3>
+              
+              <div className="flex flex-row flex-wrap justify-center md:justify-start gap-6 sm:gap-14">
+                
+                <div className="flex flex-col items-center justify-center gap-3">
+                  <div className="w-12 h-12 rounded-full bg-white dark:bg-slate-800 flex items-center justify-center text-pink-400 dark:text-purple-300 shadow-md shadow-pink-100/50 dark:shadow-none border border-pink-100 dark:border-slate-700 transition-transform hover:scale-110">
+                    <Cat className="w-5 h-5" />
+                  </div>
+                  <span className="text-[10px] font-medium tracking-widest text-gray-500 dark:text-slate-400 uppercase">Cats ♡</span>
+                </div>
+                
+                <div className="flex flex-col items-center justify-center gap-3">
+                  <div className="w-12 h-12 rounded-full bg-white dark:bg-slate-800 flex items-center justify-center text-purple-400 dark:text-purple-300 shadow-md shadow-purple-100/50 dark:shadow-none border border-purple-100 dark:border-slate-700 transition-transform hover:scale-110">
+                    <Camera className="w-5 h-5" />
+                  </div>
+                  <span className="text-[10px] font-medium tracking-widest text-gray-500 dark:text-slate-400 uppercase">Visuals 🎞</span>
+                </div>
+                
+                <div className="flex flex-col items-center justify-center gap-3">
+                  <div className="w-12 h-12 rounded-full bg-white dark:bg-slate-800 flex items-center justify-center text-rose-400 dark:text-rose-300 shadow-md shadow-rose-100/50 dark:shadow-none border border-rose-100 dark:border-slate-700 transition-transform hover:scale-110">
+                    <Music2 className="w-5 h-5" />
+                  </div>
+                  <span className="text-[10px] font-medium tracking-widest text-gray-500 dark:text-slate-400 uppercase">Anisong ♫</span>
+                </div>
+
               </div>
             </div>
+            
           </motion.div>
-
         </div>
       </div>
     </section>

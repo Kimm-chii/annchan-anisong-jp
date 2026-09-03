@@ -8,8 +8,8 @@ export const SEO_CONFIG = {
   defaultTitle: "AnnChan's Room 🎀",
   defaultDescription:
     "Konnichiwa! Welcome to AnnChan's Room! Singer, Streamer and lover of all things cute. Discover latest anisong covers, logs, and join our community! ✨",
-  defaultImage: "/og-preview.jpg", // Relative path automatically resolved to absolute URL at runtime
-  imageType: "image/jpeg",
+  defaultImage: "/og-preview.webp", // Relative path automatically resolved to absolute URL at runtime
+  imageType: "image/webp",
   imageWidth: "1200",
   imageHeight: "630",
   imageAlt: "AnnChan's Room - Singer & Streamer Portfolio Preview Banner",
