@@ -76,7 +76,8 @@ export default function MessageForm() {
       console.error("Failed to send message:", error);
       setIsSubmitting(false);
     }
-
+  };
+  
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
