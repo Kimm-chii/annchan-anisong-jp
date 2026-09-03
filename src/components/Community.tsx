@@ -71,38 +71,81 @@ export default function Community() {
     }
   }, [cooldown]);
 
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    if (cooldown > 0 || isSubmitting) return;
+    const handleSubmit = async (e: FormEvent) => {
+      e.preventDefault();
 
-    setIsSubmitting(true);
+      if (cooldown > 0 || isSubmitting) return;
 
-    if (formData.honeypot !== "") {
-      setTimeout(() => {
+      setIsSubmitting(true);
+
+      // Honeypot: silently accept bot submissions
+      if (formData.honeypot !== "") {
+        setTimeout(() => {
+          setIsSubmitting(false);
+          setCooldown(60);
+          localStorage.setItem("annchan_msg_sent", Date.now().toString());
+          setFormData({
+            name: "",
+            message: "",
+            honeypot: "",
+          });
+        }, 800);
+
+        return;
+      }
+
+      try {
+        const response = await fetch(
+          "https://annchan-messages.sretii22.workers.dev/",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              name: formData.name,
+              message: formData.message,
+              phone: formData.honeypot,
+            }),
+          }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          throw new Error(
+            data.error || "Failed to send message."
+          );
+        }
+
+        // Successfully sent
         setIsSubmitting(false);
         setCooldown(60);
-        localStorage.setItem("annchan_msg_sent", Date.now().toString());
-        setFormData({ name: "", message: "", honeypot: "" });
-      }, 800);
-      return;
-    }
 
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setCooldown(60);
-      localStorage.setItem("annchan_msg_sent", Date.now().toString());
-      setFormData({ name: "", message: "", honeypot: "" });
-    }, 1200);
-  };
+        localStorage.setItem(
+          "annchan_msg_sent",
+          Date.now().toString()
+        );
 
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
+        setFormData({
+          name: "",
+          message: "",
+          honeypot: "",
+        });
+      } catch (error) {
+        console.error("Failed to send message:", error);
+        setIsSubmitting(false);
+      }
+    };
+
+    const handleChange = (
+      e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => {
+      setFormData((prev) => ({
+        ...prev,
+        [e.target.name]: e.target.value,
+      }));
+    };
 
   return (
     <section id="diary-community" className="py-12 sm:py-20 relative scroll-mt-20 sm:scroll-mt-24">

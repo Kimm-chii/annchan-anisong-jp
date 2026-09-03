@@ -32,6 +32,13 @@ export default function MessageForm() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
+    console.log("🔥 FORM SUBMITTED", {
+      cooldown,
+      isSubmitting,
+      name: formData.name,
+      message: formData.message,
+    });
+
     // Prevent submission if on cooldown
     if (cooldown > 0 || isSubmitting) return;
 
