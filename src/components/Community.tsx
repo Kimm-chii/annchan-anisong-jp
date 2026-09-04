@@ -253,7 +253,7 @@ export default function Community() {
                   borderRadius: ["60% 40% 30% 70% / 60% 30% 70% 40%", "30% 60% 70% 40% / 50% 60% 30% 60%", "60% 40% 30% 70% / 60% 30% 70% 40%"] 
                 }}
                 transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute -inset-4 sm:-inset-6 bg-gradient-to-br from-pink-100/60 to-rose-50/60 dark:from-purple-900/20 dark:to-slate-800/40 backdrop-blur-xl -z-10"
+                className="absolute -inset-0 sm:-inset-6 bg-gradient-to-br from-pink-100/60 to-rose-50/60 dark:from-purple-900/20 dark:to-slate-800/40 backdrop-blur-xl -z-10"
               ></motion.div>
 
               <motion.div

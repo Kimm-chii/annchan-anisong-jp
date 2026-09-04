@@ -44,7 +44,7 @@ export default function Music() {
     }, []);
 
   return (
-    <section id="music" className="py-12 md:py-20 relative">
+    <section id="music" className="py-12 md:py-20 relative overflow-hidden">
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 md:px-12 relative z-10">
 
         {/* Header */}

@@ -18,7 +18,7 @@ export default function About() {
   }, [imageUrls.length]);
 
   return (
-    <section id="about" className="pt-16 sm:pt-24 pb-16 sm:pb-28 relative">
+    <section id="about" className="pt-16 sm:pt-24 pb-16 sm:pb-28 relative overflow-hidden">
       <div className="max-w-[1200px] mx-auto px-5 sm:px-8 md:px-12">
         <div className="flex flex-col md:flex-row items-center gap-12 lg:gap-24 relative">
           

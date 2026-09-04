@@ -10,6 +10,21 @@ export default function Navbar() {
   const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {
+    if (!isOpen) return;
+
+    const initialScrollY = window.scrollY;
+
+    const handleScrollClose = () => {
+      if (Math.abs(window.scrollY - initialScrollY) > 5) {
+        setIsOpen(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScrollClose, { passive: true });
+    return () => window.removeEventListener("scroll", handleScrollClose);
+  }, [isOpen]);
+
+  useEffect(() => {
     const handleScroll = () => {
       // Calculate scroll progress (0 to 1)
       const totalScroll = document.documentElement.scrollHeight - window.innerHeight;
@@ -55,7 +70,7 @@ export default function Navbar() {
 
   return (
     <header className="fixed top-3 sm:top-4 inset-x-0 mx-auto w-[calc(100%-1.25rem)] sm:w-[calc(100%-2.5rem)] max-w-[1400px] z-50 transition-all duration-300">
-      <nav className="bg-[#fffdf5]/80 dark:bg-slate-900/80 backdrop-blur-xl border border-pink-200/40 dark:border-slate-700/60 shadow-sm shadow-pink-100/20 dark:shadow-black/40 rounded-full px-3.5 sm:px-5 py-2 sm:py-2.5 flex justify-between items-center relative transition-colors duration-500 overflow-hidden">
+      <nav className="bg-[#fffdf5]/80 dark:bg-slate-900/80 backdrop-blur-xl border border-pink-200/40 dark:border-slate-700/60 shadow-sm shadow-pink-100/20 dark:shadow-black/40 rounded-full px-3.5 sm:px-5 py-2 sm:py-2.5 flex justify-between items-center relative transition-colors duration-500">
         
         {/* Soft Fuwa Fuwa Live Scroll Progress Line at Bottom Edge of Navbar */}
         <div className="absolute bottom-0 left-6 right-6 h-[2px] bg-pink-100/30 dark:bg-slate-800/50 rounded-full overflow-hidden">
@@ -143,35 +158,41 @@ export default function Navbar() {
         <AnimatePresence>
           {isOpen && (
             <motion.div
-              initial={{ opacity: 0, y: -10, scale: 0.95 }}
+              initial={{ opacity: 0, y: -8, scale: 0.96 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -10, scale: 0.95 }}
-              transition={{ duration: 0.2 }}
-              className="absolute top-full left-0 right-0 mt-2 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-2xl border border-pink-100/80 dark:border-slate-800 p-3 shadow-xl sm:hidden overflow-hidden"
+              exit={{ opacity: 0, y: -8, scale: 0.96 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              className="absolute top-full left-0 right-0 mt-2.5 bg-[#fffdf5]/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-3xl border border-pink-200/60 dark:border-slate-700/80 p-3.5 shadow-2xl shadow-pink-200/30 dark:shadow-purple-950/50 sm:hidden overflow-hidden z-50"
             >
-              <div className="space-y-1">
-                {siteData.header.nav.map((item) => (
-                  <a
-                    key={item.name}
-                    href={item.href}
-                    onClick={() => {
-                      setActiveItem(item.name);
-                      setIsOpen(false);
-                    }}
-                    className={`block text-center font-medium rounded-xl py-2.5 transition-colors text-sm tracking-wide ${
-                      activeItem === item.name
-                        ? "bg-pink-50 dark:bg-purple-900/20 text-pink-500 dark:text-purple-300"
-                        : "text-gray-700 dark:text-slate-200 hover:text-pink-500 dark:hover:text-purple-300 hover:bg-pink-50/80 dark:hover:bg-slate-800/80"
-                    }`}
-                  >
-                    {item.name}
-                  </a>
-                ))}
-                <div className="pt-2 mt-1 border-t border-pink-100 dark:border-slate-800 flex justify-center">
+              <div className="space-y-1.5">
+                {siteData.header.nav.map((item) => {
+                  const isActive = activeItem === item.name;
+                  return (
+                    <a
+                      key={item.name}
+                      href={item.href}
+                      onClick={() => {
+                        setActiveItem(item.name);
+                        setIsOpen(false);
+                      }}
+                      className={`flex items-center justify-between font-medium rounded-2xl px-4 py-3 transition-all duration-200 text-xs sm:text-sm tracking-wide ${
+                        isActive
+                          ? "bg-pink-100/70 dark:bg-purple-900/40 text-pink-600 dark:text-purple-300 shadow-sm border border-pink-200/50 dark:border-purple-700/40 font-semibold"
+                          : "text-gray-700 dark:text-slate-200 hover:text-pink-500 dark:hover:text-purple-300 hover:bg-pink-50/60 dark:hover:bg-slate-800/60"
+                      }`}
+                    >
+                      <span>{item.name}</span>
+                      {isActive && (
+                        <span className="text-pink-400 dark:text-purple-300 text-xs">✦</span>
+                      )}
+                    </a>
+                  );
+                })}
+                <div className="pt-2.5 mt-1 border-t border-pink-100 dark:border-slate-800/80">
                   <a
                     href="#socials"
                     onClick={() => setIsOpen(false)}
-                    className="group w-full text-center bg-pink-400 dark:bg-purple-600 text-white hover:bg-pink-50 dark:hover:bg-slate-800 hover:text-pink-600 dark:hover:text-purple-300 font-medium py-2 rounded-xl text-xs flex items-center justify-center gap-1.5 border border-pink-300/60 dark:border-purple-500/60 transition-all duration-300 shadow-sm hover:-translate-y-0.5 active:scale-95"
+                    className="group w-full text-center bg-pink-400 dark:bg-purple-600 text-white hover:bg-pink-500 dark:hover:bg-purple-500 font-medium py-3 rounded-2xl text-xs sm:text-sm tracking-widest uppercase flex items-center justify-center gap-2 border border-pink-300/60 dark:border-purple-500/60 transition-all duration-300 shadow-md shadow-pink-300/30 dark:shadow-none active:scale-[0.98]"
                   >
                     <span>Socials</span>
                     <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300" />

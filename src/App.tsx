@@ -11,7 +11,7 @@ import AmbientGlowBackground from "./components/AmbientGlowBackground";
 
 export default function App() {
   return (
-    <div className="min-h-screen text-gray-800 font-sans selection:bg-pink-200 selection:text-pink-900">
+    <div className="min-h-screen text-gray-800 font-sans selection:bg-pink-200 selection:text-pink-900 relative">
       <GrainOverlay />
       <AmbientGlowBackground />
       <OpenGraphHead />
