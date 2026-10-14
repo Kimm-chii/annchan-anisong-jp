@@ -50,3 +50,22 @@ h1, h2, h3, .font-display {
   animation: spin-slow 20s linear infinite;
 }
 
+/* Base: hidden attribute, no double-tap zoom, reduced motion */
+[hidden] {
+  display: none !important;
+}
+
+html {
+  touch-action: manipulation;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
