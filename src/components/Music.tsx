@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import {
   Play,
@@ -8,40 +7,10 @@ import {
   Smartphone,
 } from "lucide-react";
 import { siteData } from "../data";
-
-type YouTubeItem = {
-  id: string;
-  title: string;
-  thumbnail: string;
-  publishedAt: string;
-  url: string;
-};
+import { useYouTubeFeed } from "../lib/youtubeFeed";
 
 export default function Music() {
-  const [videos, setVideos] = useState<YouTubeItem[]>([]);
-  const [shorts, setShorts] = useState<YouTubeItem[]>([]);
-
-    useEffect(() => {
-      fetch("https://annchan-youtube.sretii22.workers.dev/youtube")
-        .then((res) => {
-          if (!res.ok) {
-            throw new Error(`YouTube API error: ${res.status}`);
-          }
-
-          return res.json();
-        })
-        .then((data) => {
-          console.log("YouTube Worker response:", data);
-          console.log("VIDEOS:", data.videos);
-          console.log("SHORTS:", data.shorts);
-
-          setVideos(data.videos || []);
-          setShorts(data.shorts || []);
-        })
-        .catch((error) => {
-          console.error("YouTube feed error:", error);
-        });
-    }, []);
+  const { videos, shorts } = useYouTubeFeed();
 
   return (
     <section id="music" className="py-12 md:py-20 relative overflow-hidden">

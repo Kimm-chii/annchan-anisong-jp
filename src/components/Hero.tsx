@@ -1,9 +1,17 @@
 import { siteData } from "../data";
 import { motion } from "motion/react";
 import { Play } from "lucide-react";
+import { useYouTubeFeed } from "../lib/youtubeFeed";
 
 export default function Hero() {
-  const latestRelease = siteData.music.albums[0];
+  const { videos } = useYouTubeFeed();
+  // Newest upload from the YouTube feed; the hand-picked album is only a fallback
+  const fallback = siteData.music.albums[0];
+  const latestRelease = videos[0]
+    ? { title: videos[0].title, coverUrl: videos[0].thumbnail, link: videos[0].url }
+    : fallback;
+  // Title in data.ts is "✦　AnnChan　✦": show the name, draw the stars as small accents
+  const heroName = siteData.hero.title.replace(/[✦　]/g, " ").trim();
 
   return (
     <section id="home" className="min-h-screen pt-20 sm:pt-36 pb-10 sm:pb-16 overflow-hidden relative flex flex-col justify-center">
@@ -45,16 +53,18 @@ export default function Hero() {
               </div>
             </div>
             
-            <h1 className="text-3xl sm:text-5xl md:text-6xl font-medium text-gray-800 dark:text-white leading-[1.1] mb-3 sm:mb-5 tracking-tight">
-              {siteData.hero.title}
+            <h1 className="flex items-center gap-3 sm:gap-4 text-4xl sm:text-6xl md:text-7xl font-bold text-gray-800 dark:text-white leading-[1.05] mb-3 sm:mb-5 tracking-tight">
+              <span aria-hidden="true" className="text-[0.4em] text-pink-400 dark:text-purple-300">✦</span>
+              <span>{heroName}</span>
+              <span aria-hidden="true" className="text-[0.4em] text-pink-400 dark:text-purple-300">✦</span>
             </h1>
             
-            <div className="mb-6 sm:mb-10 max-w-xs sm:max-w-md">
-              <p className="text-sm sm:text-base md:text-lg text-gray-600 dark:text-slate-300 leading-relaxed font-light tracking-wide">
+            <div className="mb-6 sm:mb-10 max-w-xs sm:max-w-lg">
+              <p className="text-[15px] sm:text-lg md:text-xl text-gray-600 dark:text-slate-300 leading-relaxed">
                 {siteData.hero.subtitle.split('\n')[0]}
               </p>
               {siteData.hero.subtitle.split('\n').length > 1 && (
-                <p className="text-[11px] sm:text-xs md:text-sm text-gray-400 dark:text-slate-500 font-light tracking-wide mt-3 sm:mt-4 whitespace-pre-line">
+                <p className="text-[13px] sm:text-sm md:text-base text-gray-500 dark:text-slate-400 mt-2 sm:mt-3 whitespace-pre-line">
                   {siteData.hero.subtitle.split('\n').slice(1).join('\n')}
                 </p>
               )}
@@ -89,7 +99,7 @@ export default function Hero() {
                   </a>
                 </div>
 
-                <div className="flex items-center gap-1.5 text-gray-400 dark:text-slate-500 font-light text-[10px] sm:text-[11px] tracking-wide ml-1">
+                <div className="flex items-center gap-1.5 text-gray-500 dark:text-slate-400 text-xs ml-1">
                   <span>📍</span>
                   <span>Based in Japan</span>
                 </div>
@@ -104,7 +114,7 @@ export default function Hero() {
               className="mt-6 sm:mt-12 lg:mt-16 w-full max-w-[270px] sm:max-w-[300px] flex items-center p-1.5 sm:p-2 rounded-2xl border border-pink-100/80 dark:border-slate-800/80 bg-white/60 dark:bg-slate-800/50 backdrop-blur-md shadow-[0_4px_24px_rgba(244,114,182,0.06)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.2)]"
             >
               <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden flex-shrink-0 bg-slate-100 mr-3 sm:mr-4 relative">
-                <img src={latestRelease.coverUrl} alt="Thumbnail" className="w-full h-full object-cover" />
+                <img src={latestRelease.coverUrl} alt="" className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-black/10"></div>
               </div>
               <div className="flex-1 min-w-0 pr-2 sm:pr-3 flex flex-col justify-center">
