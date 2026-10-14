@@ -14,7 +14,7 @@ export default function Hero() {
   const heroName = siteData.hero.title.replace(/[✦　]/g, " ").trim();
 
   return (
-    <section id="home" className="min-h-screen pt-20 sm:pt-36 pb-10 sm:pb-16 overflow-hidden relative flex flex-col justify-center">
+    <section id="home" className="min-h-[calc(var(--sh,1vh)*100)] pt-20 sm:pt-36 pb-10 sm:pb-16 overflow-hidden relative flex flex-col justify-center">
       
       {/* Delicate floating background elements */}
       <motion.div 

@@ -34,10 +34,10 @@ export const AmbientGlowBackground: React.FC = () => {
     const handleResize = () => {
       clearTimeout(timeoutId);
       timeoutId = setTimeout(() => {
-        setDimensions({
-          width: window.innerWidth,
-          height: window.innerHeight,
-        });
+        // Only rebuild when the width changes: in-app browsers fire resize as their toolbar hides
+        setDimensions((prev) =>
+          prev.width === window.innerWidth ? prev : { width: window.innerWidth, height: window.innerHeight }
+        );
       }, 200);
     };
 
