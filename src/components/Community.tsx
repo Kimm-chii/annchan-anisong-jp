@@ -1,6 +1,7 @@
 import { useState, useEffect, ReactNode, FormEvent, ChangeEvent } from "react";
 import { motion } from "motion/react";
 import { siteData } from "../data";
+import { useTurnstile } from "../lib/turnstile";
 import { 
   BookOpen, 
   Calendar, 
@@ -53,6 +54,8 @@ export default function Community() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [cooldown, setCooldown] = useState(0);
+  const [sendError, setSendError] = useState("");
+  const turnstile = useTurnstile(cooldown === 0);
 
   useEffect(() => {
     const lastSent = localStorage.getItem("annchan_msg_sent");
@@ -75,7 +78,12 @@ export default function Community() {
       e.preventDefault();
 
       if (cooldown > 0 || isSubmitting) return;
+      if (!turnstile.token) {
+        setSendError("Please wait for the quick check above the button to finish.");
+        return;
+      }
 
+      setSendError("");
       setIsSubmitting(true);
 
       // Honeypot: silently accept bot submissions
@@ -106,11 +114,12 @@ export default function Community() {
               name: formData.name,
               message: formData.message,
               phone: formData.honeypot,
+              turnstileToken: turnstile.token,
             }),
           }
         );
 
-        const data = await response.json();
+        const data = await response.json().catch(() => ({}));
 
         if (!response.ok || !data.success) {
           throw new Error(
@@ -134,7 +143,10 @@ export default function Community() {
         });
       } catch (error) {
         console.error("Failed to send message:", error);
+        const msg = error instanceof Error ? error.message : "";
+        setSendError(msg && msg !== "Failed to fetch" ? msg : "Your letter could not be sent. Please try again.");
         setIsSubmitting(false);
+        turnstile.reset();
       }
     };
 
@@ -311,10 +323,11 @@ export default function Community() {
                         id="name"
                         name="name"
                         required
+                        maxLength={50}
                         value={formData.name}
                         onChange={handleChange}
                         placeholder="e.g. Ann, or your @ handle"
-                        className="w-full bg-white/90 dark:bg-slate-900/90 border border-pink-100 dark:border-slate-700 rounded-xl sm:rounded-2xl px-4 py-3 text-xs sm:text-sm text-gray-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-pink-300 dark:focus:ring-purple-500 focus:border-transparent transition-all placeholder:text-gray-400 dark:placeholder:text-slate-500 shadow-sm"
+                        className="w-full bg-white/90 dark:bg-slate-900/90 border border-pink-100 dark:border-slate-700 rounded-xl sm:rounded-2xl px-4 py-3 text-base sm:text-sm text-gray-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-pink-300 dark:focus:ring-purple-500 focus:border-transparent transition-all placeholder:text-gray-400 dark:placeholder:text-slate-500 shadow-sm"
                       />
                     </div>
 
@@ -327,16 +340,25 @@ export default function Community() {
                         name="message"
                         required
                         rows={3}
+                        maxLength={500}
                         value={formData.message}
                         onChange={handleChange}
                         placeholder="Say hi to AnnChan, ask a question, or leave some love! ✨"
-                        className="w-full bg-white/90 dark:bg-slate-900/90 border border-pink-100 dark:border-slate-700 rounded-xl sm:rounded-2xl px-4 py-3 text-xs sm:text-sm text-gray-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-pink-300 dark:focus:ring-purple-500 focus:border-transparent transition-all placeholder:text-gray-400 dark:placeholder:text-slate-500 resize-none shadow-sm"
+                        className="w-full bg-white/90 dark:bg-slate-900/90 border border-pink-100 dark:border-slate-700 rounded-xl sm:rounded-2xl px-4 py-3 text-base sm:text-sm text-gray-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-pink-300 dark:focus:ring-purple-500 focus:border-transparent transition-all placeholder:text-gray-400 dark:placeholder:text-slate-500 resize-none shadow-sm"
                       ></textarea>
                     </div>
 
+                    <div ref={turnstile.ref} className="min-h-[65px]" />
+
+                    {(sendError || turnstile.loadError) && (
+                      <p role="alert" className="text-sm text-rose-500 dark:text-rose-300 text-center">
+                        {sendError || "The spam check could not load. Please refresh the page."}
+                      </p>
+                    )}
+
                     <button
                       type="submit"
-                      disabled={isSubmitting || cooldown > 0}
+                      disabled={isSubmitting || cooldown > 0 || !turnstile.token}
                       className="w-full bg-pink-400 hover:bg-pink-500 dark:bg-purple-600 dark:hover:bg-purple-500 text-white font-medium text-[11px] sm:text-xs tracking-widest uppercase rounded-xl sm:rounded-2xl px-6 py-3.5 flex items-center justify-center gap-2 transition-all shadow-md shadow-pink-200/50 dark:shadow-none hover:shadow-lg active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed"
                     >
                       {isSubmitting ? (
